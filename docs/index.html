@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(41, 41, 41, 1);
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+
+}
+header {
+  padding: 100px 0;
+  text-align: center;
+}
+header h1 {
+  font-family: Georgia;
+  letter-spacing: 0;
+}
+h1 {
+  font-family: Georgia;
+}
+h2 {
+  font-family: Georgia;
+  margin: 0;
+}
+main {
+  margin: 50px auto;
+  max-width: 700px;
+  width: 100%;
+}
+pre#header {
+  padding: 50px;
+  text-align: center;
+}
+pre {
+  background: whitesmoke;
+  padding: 10px;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+code {
+  background: whitesmoke;
+}
+main ol, main ul {
+  padding-inline-start: 20px;
+}
+main hr {
+  margin: 50px 0;
+  border: none;
+  border-top: 3px double #ddd;
+  color: #ddd;
+  overflow: visible;
+  text-align: center;
+  height: 5px;
+}
+main hr:after {
+  background: #fff;
+  content: '§';
+  padding: 0 4px;
+  position: relative;
+  top: -13px;
+}
+main blockquote {
+  margin: 0;
+}
+body > * {
+  width: 100%;
+}
+img {
+  width: 100%;
+}
+#author {
+  text-align: center;
+  padding: 50px;
+}
+a, a:visited {
+  color: rgba(0,0,0,0.8);
+}
+a.button {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  text-decoration: none;
+  padding: 2px 10px;
+  font-size: 12px;
+  border-radius: 3px;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" />
+</head>
+<body>
+<header>
+  <h1>KV</h1>
+  <div>Universal URI Scheme for Storing Key-Value Pairs</div>
+  <div class='buttons'>
+    <a class='button' href="https://github.com/sobachef/kv/issues"><i class="fab fa-github"></i> Discuss on GitHub</a>
+  </div>
+</header>
+<main>
+<p>KV is a URI scheme exclusively for storing data. Here's what it looks like:</p>
+<pre><code>kv:?roses=red&amp;violets=blue
+</code></pre>
+<p>URI schemes are originally designed to <a href="https://en.wikipedia.org/wiki/List_of_URI_schemes">point to resources</a>. The term "URI (Universal Resource Identifier)" itself implies that URIs are meant to be used for referencing resources.</p>
+<p>KV URI Scheme is the opposite. KV is not for pointing to a resource location. There is no location because the whole point of KV is that there is no location. It's explicitly for storing data within the URI itself, not tied to any resource.</p>
+<hr />
+<h1 id="specification">Specification</h1>
+<p>A KV URI is a fully compliant subset of the <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a> (or, the URI as we know it). Here's the general structure of a URI:</p>
+<p><img src="url.png" alt="url" /></p>
+<p><br></p>
+<p>A KV URI scheme is only interested in the <strong>"query"</strong> part of the URI specification:</p>
+<p><img src="kv.png" alt="kv" /></p>
+<p>Here's an example:</p>
+<pre><code>kv:?&lt;key0&gt;=&lt;val0&gt;&amp;&lt;key1&gt;=&lt;val1&gt;&amp;...
+</code></pre>
+<ol>
+<li><strong>"kv" scheme:</strong> A KV URI starts with "kv:?". This "kv:?" prefix ensures that machines can easily detect kv encapsulated data with minimum computation. </li>
+<li><strong>Single line:</strong> because kv is designed for key-value pairs (one dimensional data structure), everything fits into a single line. This means it can be easily embedded anywhere, such as a CSV cell, hypertext content, or can be used in a command line program execution.</li>
+<li><strong>Everything is a string:</strong> To avoid verbosity introduced by double quotes, kv makes a tradeoff. Everything is a string. When other data types need to be used, they can be interpreted on an application level.</li>
+</ol>
+<hr />
+<h1 id="why">Why?</h1>
+<p>The idea for KV came while trying to find a way to create a portable key-value notation that can be easily embedded into an HTML document, just like a URI, but without referencing a specific resource.</p>
+<p>The requirements were as follows:</p>
+<ol>
+<li><strong>Human Readable:</strong> Humans should be able to easily make sense of what's stored inside.</li>
+<li><strong>Concise</strong>: must be as concise as possible (JSON is not concise enough just for storing key-values because of double quotes, brackets, and multiple data type support)</li>
+<li><strong>Embeddable:</strong> Must be easily embeddable into any context such as command line, CSV, or as inline content.</li>
+<li><strong>Machine Processable:</strong> No reinventing the wheel. Must be able to use existing tools to process the data.</li>
+<li><strong>Machine Detectable:</strong> Machines should be able to easily detect the format and extract key value pairs with zero computation. (JSON is not "machine detectable" because it is impossible to know whether a snippet of text is JSON until you try to parse it).</li>
+</ol>
+<p>Unfortunately, there was no existing standard that met all these requirements.</p>
+<p>Fortunately, there was one widely adopted standard we could repurpose to serve the purpose: The URI system.</p>
+<hr />
+<h1 id="usage">Usage</h1>
+<p>KV can be used in various scenarios:</p>
+<p><br></p>
+<h2 id="1selfcontainedportabledatabundle">1. Self-contained portable data bundle</h2>
+<p>Self contained data bundles can be powerful because they are portable. Because you do not need a special software to interpret the data, the data can be easily shared and processed across multiple platforms and systems.</p>
+<h3 id="11digitalsignaturebundle">1.1. Digital Signature Bundle</h3>
+<p>To verify a digital signature, you need the original data, the sender public key, and the signature itself. These three attributes may be expressed using a KV URI:</p>
+<pre><code>kv:?pub=&lt;public key&gt;&amp;sig=&lt;signature&gt;&amp;data=&lt;original data&gt;
+</code></pre>
+<p>A parser may parse above URI into the following variables:</p>
+<pre><code>pub := &lt;public key&gt;
+sig := &lt;signature&gt;
+data := &lt;original data&gt;
+</code></pre>
+<p>and then verify the authenticity through <code>ECDSA.verify(pub, sig, data)</code></p>
+<h3 id="12asymmetricencryptionbundle">1.2. Asymmetric Encryption Bundle</h3>
+<p>We could encrypt a message and bundle it into a single self-contained KV URI. In order to decrypt an encrypted message, the sender may attach the receiver's public key with which he has encrypted the message. Both the encrypted message and the public key may be included in a KV URI.</p>
+<pre><code>kv:?pub=&lt;public key&gt;&amp;encrypted=&lt;encrypted data&gt;
+</code></pre>
+<p>A parser may parse the URI </p>
+<pre><code>pub := &lt;public key&gt;
+encrypted := &lt;encrypted data&gt;
+</code></pre>
+<p>The owner of the matching private key may scan through all the KV URIs to find the ones that are relevant to them (by filtering for public key) and decrypt the data</p>
+<p><br></p>
+<h2 id="2inlineembed">2. Inline Embed</h2>
+<p>The power of KV is in its human readability and embeddability. Because KV is literally just a URI, it can be embedded anywhere a URI can be embedded. This means anywhere from a CSV document to an HTML document to a database entry.</p>
+<pre><code>&lt;html&gt;
+&lt;body&gt;
+  &lt;p&gt;Here's a signed message: &lt;a href="kv:?pub=XXX&amp;sig=SSS&amp;data=DDD"&gt;Verify&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>It's also easily machine detectable and processable. To find all kv datasets in an HTML document, you only need to run:</p>
+<pre><code>let kvs = []
+document.querySelectorAll("a[href^='kv']").forEach((el) =&gt; {
+  kvs.push(el.getAttribute("href"))
+})
+console.log("all kv attributes: ", kvs)
+</code></pre>
+<p><br></p>
+<h2 id="3worksanywhere">3. Works Anywhere</h2>
+<p>KV is literally just a URI. Therefore you can parse it using any URI parser, including the native browser URI parser. For example:</p>
+<pre><code>const uri = "kv:?roses=red&amp;violets=blue"
+const u = new URL(uri)
+u.searchParams.forEach((k, v) =&gt; {
+  console.log(k, v)
+})
+</code></pre>
+<hr />
+<h1 id="faq">FAQ</h1>
+<h2 id="1whyanewurischeme">1. Why a new URI scheme?</h2>
+<p>It is true that we may be able to achieve the same result using existing URI schemes, such as http. For example:</p>
+<pre><code>http://?roses=red&amp;violets=blue
+</code></pre>
+<p>But this is not what HTTP was designed for (it's designed for pointing to hypertext resources). And same goes for other URI schemes like FTP, IMAP, DNS, etc. We need a generic scheme to store Key-Value pairs inside a URI.</p>
+<hr />
+</main>
+</body>
+</html>
